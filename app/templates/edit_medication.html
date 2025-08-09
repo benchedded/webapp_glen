@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Medication - Health Tracker</title>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6610f2;
+            --edit-color: #17a2b8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Montserrat", sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            padding: 15px 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            padding: 0 15px;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            body {
+                padding: 10px 0;
+            }
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-height: 44px;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .back-link i {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 576px) {
+            .back-link {
+                padding: 10px 16px;
+                margin-bottom: 15px;
+                font-size: 14px;
+            }
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                border-radius: 15px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                margin: 0 5px;
+            }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            border: none;
+            padding: 30px 25px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .card-header p {
+            margin: 12px 0 0 0;
+            opacity: 0.95;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .card-header {
+                padding: 25px 20px;
+                border-radius: 15px 15px 0 0 !important;
+            }
+            
+            .card-header h2 {
+                font-size: 1.6rem;
+            }
+            
+            .card-header p {
+                font-size: 1rem;
+                margin-top: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-header {
+                padding: 20px 15px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .card-header p {
+                font-size: 0.9rem;
+            }
+        }
+
+        .card-body {
+            padding: 35px 30px;
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 25px 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-body {
+                padding: 20px 15px;
+            }
+        }
+
+        .current-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid var(--edit-color);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 25px;
+            color: #0277bd;
+        }
+
+        .current-info h6 {
+            color: #01579b;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .current-info .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .current-info .info-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .current-info .info-label {
+            font-weight: 600;
+            color: #01579b;
+        }
+
+        @media (max-width: 576px) {
+            .current-info {
+                padding: 15px 16px;
+                margin-bottom: 20px;
+            }
+            
+            .current-info .info-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+                font-size: 12px;
+            }
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 14px 16px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            min-height: 50px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.2);
+            background: #fff;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .form-control, .form-select {
+                font-size: 16px;
+                padding: 14px 16px;
+                min-height: 52px;
+            }
+            
+            .form-label {
+                font-size: 15px;
+                margin-bottom: 6px;
+            }
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            min-height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #520dc2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-outline-danger {
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            background: transparent;
+        }
+
+        .btn-outline-danger:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .btn {
+                min-height: 48px;
+                padding: 12px 24px;
+                font-size: 16px;
+                border-radius: 8px;
+            }
+            
+            .btn-group-mobile {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                margin-top: 20px;
+            }
+            
+            .btn-group-mobile .btn {
+                width: 100%;
+                margin: 0;
+            }
+        }
+
+        .required {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .form-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .icon-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 16px;
+            color: #6c757d;
+            z-index: 10;
+            font-size: 16px;
+        }
+
+        .icon-input .form-control {
+            padding-left: 48px;
+        }
+
+        .form-control-color {
+            width: 100%;
+            height: 50px !important;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .form-control-color:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .form-control-color {
+                height: 52px !important;
+            }
+        }
+
+        .row {
+            margin: 0 -8px;
+        }
+
+        .row > * {
+            padding: 0 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .row {
+                margin: 0 -4px;
+            }
+            
+            .row > * {
+                padding: 0 4px;
+                margin-bottom: 16px;
+            }
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
+        }
+
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Delete confirmation modal styles */
+        .delete-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #856404;
+        }
+
+        /* Enhanced accessibility */
+        .btn:focus-visible,
+        .form-control:focus-visible,
+        .form-select:focus-visible,
+        .back-link:focus-visible {
+            outline: 3px solid #0d6efd;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Calendar
+        </a>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-edit"></i> Edit Medication</h2>
+                <p>Update your medication information</p>
+            </div>
+            <div class="card-body">
+                <!-- Current medication info display -->
+                <div class="current-info">
+                    <h6><i class="fas fa-info-circle"></i> Current Information</h6>
+                    <div class="info-grid" id="currentInfo">
+                        <!-- Will be populated by JavaScript -->
+                        <div class="info-item">
+                            <div class="info-label">Name:</div>
+                            <div id="currentName">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Dosage:</div>
+                            <div id="currentDosage">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Frequency:</div>
+                            <div id="currentFrequency">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Time:</div>
+                            <div id="currentTime">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flash messages would be inserted here by the Flask template -->
+                <div class="alert alert-info d-none" id="infoAlert"></div>
+                <div class="alert alert-danger d-none" id="errorAlert"></div>
+                <div class="alert alert-success d-none" id="successAlert"></div>
+
+                <form id="medicationForm" novalidate>
+                    <div class="row">
+                        <div class="col-md-8 col-12">
+                            <div class="form-group">
+                                <label for="name" class="form-label">
+                                    Medication Name <span class="required">*</span>
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-pills"></i>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter medication name" required>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="dosage" class="form-label">
+                                    Dosage <span class="required">*</span>
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-prescription"></i>
+                                    <input type="text" class="form-control" id="dosage" name="dosage" placeholder="e.g., 50mg" required>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="start_date" class="form-label">
+                                    Start Date <span class="required">*</span>
+                                </label>
+                                <input type="date" class="form-control" id="start_date" name="start_date" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="end_date" class="form-label">
+                                    End Date
+                                </label>
+                                <input type="date" class="form-control" id="end_date" name="end_date">
+                                <div class="form-text">Leave blank for ongoing medication</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="time_to_take" class="form-label">
+                                    Time to Take <span class="required">*</span>
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-clock"></i>
+                                    <input type="time" class="form-control" id="time_to_take" name="time_to_take" required>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 col-12">
+                            <div class="form-group">
+                                <label for="frequency" class="form-label">
+                                    Frequency <span class="required">*</span>
+                                </label>
+                                <select class="form-select" id="frequency" name="frequency" required>
+                                    <option value="">Select frequency</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="twice_daily">Twice Daily</option>
+                                    <option value="three_times_daily">Three Times Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="as_needed">As Needed</option>
+                                </select>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="color" class="form-label">
+                                    Calendar Color
+                                </label>
+                                <input type="color" class="form-control form-control-color" id="color" name="color" value="#007bff">
+                                <div class="form-text">Choose display color for calendar</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="instructions" class="form-label">
+                            Special Instructions
+                        </label>
+                        <textarea class="form-control" id="instructions" name="instructions" rows="4" placeholder="Special instructions for taking this medication"></textarea>
+                        <div class="form-text">Any special instructions for taking this medication</div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <!-- Desktop button layout -->
+                    <div class="d-none d-md-flex justify-content-between align-items-center mt-4">
+                        <button type="button" class="btn btn-outline-danger" id="deleteBtn">
+                            <i class="fas fa-trash"></i> Delete Medication
+                        </button>
+                        <div class="d-flex gap-3">
+                            <a href="/" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save"></i> Update Medication
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mobile button layout -->
+                    <div class="d-md-none btn-group-mobile">
+                        <button type="button" class="btn btn-outline-danger" id="deleteBtnMobile">
+                            <i class="fas fa-trash"></i> Delete Medication
+                        </button>
+                        <a href="/" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="submitBtnMobile">
+                            <i class="fas fa-save"></i> Update Medication
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                        <i class="fas fa-exclamation-triangle"></i> Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="delete-warning">
+                        <i class="fas fa-warning"></i>
+                        <strong>Warning:</strong> This action cannot be undone.
+                    </div>
+                    <p>Are you sure you want to delete this medication?</p>
+                    <div class="current-info" id="medicationToDelete">
+                        <!-- Will be populated with current medication info -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash"></i> Delete Permanently
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('medicationForm');
+            const submitBtns = [document.getElementById('submitBtn'), document.getElementById('submitBtnMobile')];
+            const deleteBtns = [document.getElementById('deleteBtn'), document.getElementById('deleteBtnMobile')];
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            const isMobile = window.innerWidth <= 768;
+            
+            // Mock current medication data (in real app, this would come from server)
+            const currentMedication = {
+                id: '123',
+                name: 'Ibuprofen',
+                dosage: '200mg',
+                start_date: '2024-01-01',
+                end_date: '2024-12-31',
+                time_to_take: '09:00',
+                frequency: 'daily',
+                instructions: 'Take with food',
+                color: '#007bff'
+            };
+
+            // Load current medication data
+            function loadCurrentData() {
+                document.getElementById('currentName').textContent = currentMedication.name;
+                document.getElementById('currentDosage').textContent = currentMedication.dosage;
+                document.getElementById('currentFrequency').textContent = currentMedication.frequency.replace('_', ' ');
+                document.getElementById('currentTime').textContent = currentMedication.time_to_take;
+
+                // Populate form fields
+                document.getElementById('name').value = currentMedication.name;
+                document.getElementById('dosage').value = currentMedication.dosage;
+                document.getElementById('start_date').value = currentMedication.start_date;
+                document.getElementById('end_date').value = currentMedication.end_date || '';
+                document.getElementById('time_to_take').value = currentMedication.time_to_take;
+                document.getElementById('frequency').value = currentMedication.frequency;
+                document.getElementById('instructions').value = currentMedication.instructions || '';
+                document.getElementById('color').value = currentMedication.color;
+            }
+
+            // Initialize with current data
+            loadCurrentData();
+
+            // Form validation
+            function validateForm() {
+                let isValid = true;
+                const requiredFields = ['name', 'dosage', 'start_date', 'time_to_take', 'frequency'];
+                
+                // Clear previous validation states
+                document.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                });
+
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    const feedback = field.parentNode.querySelector('.invalid-feedback') || 
+                                   field.closest('.form-group').querySelector('.invalid-feedback');
+                    
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        feedback.textContent = `${field.previousElementSibling.textContent.replace('*', '').trim()} is required`;
+                        isValid = false;
+                    }
+                });
+
+                // Validate end date is after start date
+                const startDate = document.getElementById('start_date').value;
+                const endDate = document.getElementById('end_date').value;
+                
+                if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+                    const endDateField = document.getElementById('end_date');
+                    const feedback = endDateField.closest('.form-group').querySelector('.invalid-feedback');
+                    endDateField.classList.add('is-invalid');
+                    feedback.textContent = 'End date must be after start date';
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    showAlert('Please fix the errors below', 'error');
+                    return;
+                }
+
+                // Show loading state on both buttons
+                submitBtns.forEach(btn => {
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Updating...';
+                    }
+                });
+
+                // Simulate API call (replace with actual form submission)
+                const formData = new FormData(form);
+                
+                // Here you would normally send the data to your Flask backend
+                // For demo purposes, we'll simulate success after 2 seconds
+                setTimeout(() => {
+                    showAlert('Medication updated successfully!', 'success');
+                    
+                    // Update current info display
+                    currentMedication.name = formData.get('name');
+                    currentMedication.dosage = formData.get('dosage');
+                    currentMedication.frequency = formData.get('frequency');
+                    currentMedication.time_to_take = formData.get('time_to_take');
+                    loadCurrentData();
+                    
+                    // Reset buttons
+                    submitBtns.forEach(btn => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-save"></i> Update Medication';
+                        }
+                    });
+                    
+                    // Redirect after success (uncomment for real implementation)
+                    // setTimeout(() => {
+                    //     window.location.href = '/';
+                    // }, 1500);
+                    
+                }, 2000);
+            });
+
+            // Handle delete buttons
+            deleteBtns.forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', function() {
+                        // Populate delete modal with current info
+                        const deleteInfo = document.getElementById('medicationToDelete');
+                        deleteInfo.innerHTML = `
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">Name:</div>
+                                    <div>${currentMedication.name}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Dosage:</div>
+                                    <div>${currentMedication.dosage}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Frequency:</div>
+                                    <div>${currentMedication.frequency.replace('_', ' ')}</div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        deleteModal.show();
+                    });
+                }
+            });
+
+            // Handle delete confirmation
+            document.getElementById('confirmDelete').addEventListener('click', function() {
+                const confirmBtn = this;
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Deleting...';
+
+                // Simulate API call for deletion
+                setTimeout(() => {
+                    deleteModal.hide();
+                    showAlert('Medication deleted successfully!', 'success');
+                    
+                    // In real app, redirect to calendar
+                    setTimeout(() => {
+                        // window.location.href = '/';
+                        showAlert('Redirecting to calendar...', 'info');
+                    }, 1500);
+                    
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = '<i class="fas fa-trash"></i> Delete Permanently';
+                }, 2000);
+            });
+
+            // Real-time validation
+            document.querySelectorAll('.form-control, .form-select').forEach(field => {
+                field.addEventListener('blur', function() {
+                    if (this.hasAttribute('required') && !this.value.trim()) {
+                        this.classList.add('is-invalid');
+                        const feedback = this.parentNode.querySelector('.invalid-feedback') || 
+                                       this.closest('.form-group').querySelector('.invalid-feedback');
+                        feedback.textContent = `${this.previousElementSibling.textContent.replace('*', '').trim()} is required`;
+                    } else {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+
+                field.addEventListener('input', function() {
+                    if (this.classList.contains('is-invalid') && this.value.trim()) {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            });
+
+            // Date validation
+            document.getElementById('end_date').addEventListener('change', function() {
+                const startDate = document.getElementById('start_date').value;
+                const endDate = this.value;
+                
+                if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+                    this.classList.add('is-invalid');
+                    const feedback = this.closest('.form-group').querySelector('.invalid-feedback');
+                    feedback.textContent = 'End date must be after start date';
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+
+            document.getElementById('start_date').addEventListener('change', function() {
+                const endDate = document.getElementById('end_date').value;
+                if (endDate) {
+                    document.getElementById('end_date').dispatchEvent(new Event('change'));
+                }
+            });
+
+            // Alert system
+            function showAlert(message, type) {
+                const alertTypes = {
+                    'success': 'alert-success',
+                    'error': 'alert-danger', 
+                    'info': 'alert-info'
+                };
+                
+                const alertEl = document.getElementById(type + 'Alert') || document.getElementById('infoAlert');
+                alertEl.className = `alert ${alertTypes[type]} alert-dismissible fade show`;
+                alertEl.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (alertEl.classList.contains('show')) {
+                        const closeBtn = alertEl.querySelector('.btn-close');
+                        if (closeBtn) closeBtn.click();
+                    }
+                }, 5000);
+
+                // Scroll to alert on mobile
+                if (isMobile) {
+                    alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            // Prevent zoom on iOS when focusing inputs
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                document.querySelectorAll('input, select, textarea').forEach(input => {
+                    input.addEventListener('focus', function() {
+                        this.style.fontSize = '16px';
+                    });
+                });
+            }
+
+            // Enhanced touch interactions for mobile
+            if (isMobile) {
+                // Improve scroll behavior
+                document.body.style.webkitOverflowScrolling = 'touch';
+                
+                // Auto-scroll to focused input
+                document.querySelectorAll('input, select, textarea').forEach(input => {
+                    input.addEventListener('focus', function() {
+                        setTimeout(() => {
+                            this.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'center',
+                                inline: 'nearest' 
+                            });
+                        }, 300);
+                    });
+                });
+            }
+
+            // Handle orientation changes
+            window.addEventListener('orientationchange', function() {
+                setTimeout(() => {
+                    if (document.activeElement && 
+                        (document.activeElement.tagName === 'INPUT' || 
+                         document.activeElement.tagName === 'SELECT' || 
+                         document.activeElement.tagName === 'TEXTAREA')) {
+                        document.activeElement.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }
+                }, 500);
+            });
+
+            // Add swipe back gesture for mobile
+            if (isMobile && 'ontouchstart' in window) {
+                let touchStartX = 0;
+                let touchStartY = 0;
+                
+                document.addEventListener('touchstart', function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                document.addEventListener('touchend', function(e) {
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const deltaX = touchEndX - touchStartX;
+                    const deltaY = touchEndY - touchStartY;
+                    
+                    // Swipe right from left edge (back gesture)
+                    if (touchStartX < 50 && deltaX > 100 && Math.abs(deltaY) < 100) {
+                        window.history.back();
+                    }
+                }, { passive: true });
+            }
+        });
+    </script>
+</body>
+</html>

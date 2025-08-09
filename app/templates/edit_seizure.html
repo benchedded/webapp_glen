@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Seizure Record - Health Tracker</title>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: "Montserrat", sans-serif;
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 800px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            border: none;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+
+        .card-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6f42c1;
+            box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a2d91 0%, #d91a72 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .icon-input {
+            position: relative;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 10;
+        }
+
+        .icon-input .form-control {
+            padding-left: 45px;
+        }
+
+        .severity-indicators {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .severity-indicator {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .severity-mild { background: #d1ecf1; color: #0c5460; }
+        .severity-moderate { background: #fff3cd; color: #856404; }
+        .severity-severe { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Calendar
+        </a>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-edit"></i> Edit Seizure Record</h2>
+                <p>Update seizure information for medical tracking</p>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="{{ form.seizure_date.id }}" class="form-label">
+                                {{ form.seizure_date.label }} <span class="required">*</span>
+                            </label>
+                            <div class="icon-input">
+                                <i class="fas fa-calendar"></i>
+                                {{ form.seizure_date(class="form-control" + (" is-invalid" if form.seizure_date.errors else "")) }}
+                            </div>
+                            {% for error in form.seizure_date.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.seizure_time.id }}" class="form-label">
+                                {{ form.seizure_time.label }} <span class="required">*</span>
+                            </label>
+                            <div class="icon-input">
+                                <i class="fas fa-clock"></i>
+                                {{ form.seizure_time(class="form-control" + (" is-invalid" if form.seizure_time.errors else "")) }}
+                            </div>
+                            <div class="form-text">Time when seizure occurred</div>
+                            {% for error in form.seizure_time.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <label for="{{ form.seizure_type.id }}" class="form-label">
+                                {{ form.seizure_type.label }} <span class="required">*</span>
+                            </label>
+                            {{ form.seizure_type(class="form-select" + (" is-invalid" if form.seizure_type.errors else "")) }}
+                            {% for error in form.seizure_type.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.duration.id }}" class="form-label">
+                                {{ form.duration.label }}
+                            </label>
+                            <div class="icon-input">
+                                <i class="fas fa-stopwatch"></i>
+                                {{ form.duration(class="form-control" + (" is-invalid" if form.duration.errors else "")) }}
+                            </div>
+                            <div class="form-text">Duration in minutes</div>
+                            {% for error in form.duration.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="{{ form.severity.id }}" class="form-label">
+                                {{ form.severity.label }} <span class="required">*</span>
+                            </label>
+                            {{ form.severity(class="form-select" + (" is-invalid" if form.severity.errors else "")) }}
+                            <div class="severity-indicators">
+                                <div class="severity-indicator severity-mild">Mild: Brief, little impact</div>
+                                <div class="severity-indicator severity-moderate">Moderate: Noticeable symptoms</div>
+                                <div class="severity-indicator severity-severe">Severe: Significant impact</div>
+                            </div>
+                            {% for error in form.severity.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.color.id }}" class="form-label">
+                                {{ form.color.label }}
+                            </label>
+                            {{ form.color(class="form-control form-control-color" + (" is-invalid" if form.color.errors else ""), style="height: 48px;") }}
+                            <div class="form-text">Calendar display color</div>
+                            {% for error in form.color.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.triggers.id }}" class="form-label">
+                            {{ form.triggers.label }}
+                        </label>
+                        {{ form.triggers(class="form-control" + (" is-invalid" if form.triggers.errors else "")) }}
+                        <div class="form-text">Possible triggers for this seizure</div>
+                        {% for error in form.triggers.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.notes.id }}" class="form-label">
+                            {{ form.notes.label }}
+                        </label>
+                        {{ form.notes(class="form-control" + (" is-invalid" if form.notes.errors else "")) }}
+                        <div class="form-text">Additional details about this seizure episode</div>
+                        {% for error in form.notes.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Seizure Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js'></script>
+</body>
+</html>

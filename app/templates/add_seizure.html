@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Seizure - Health Tracker</title>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #dc3545;
+            --secondary-color: #fd7e14;
+            --warning-color: #ffc107;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Montserrat", sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            padding: 15px 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            padding: 0 15px;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            body {
+                padding: 10px 0;
+            }
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-height: 44px;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .back-link i {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 576px) {
+            .back-link {
+                padding: 10px 16px;
+                margin-bottom: 15px;
+                font-size: 14px;
+            }
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                border-radius: 15px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                margin: 0 5px;
+            }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            border: none;
+            padding: 30px 25px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .card-header p {
+            margin: 12px 0 0 0;
+            opacity: 0.95;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .card-header {
+                padding: 25px 20px;
+                border-radius: 15px 15px 0 0 !important;
+            }
+            
+            .card-header h2 {
+                font-size: 1.6rem;
+            }
+            
+            .card-header p {
+                font-size: 1rem;
+                margin-top: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-header {
+                padding: 20px 15px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .card-header p {
+                font-size: 0.9rem;
+            }
+        }
+
+        .card-body {
+            padding: 35px 30px;
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 25px 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-body {
+                padding: 20px 15px;
+            }
+        }
+
+        .seizure-info {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #856404;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+        }
+
+        .seizure-info i {
+            color: #f0ad4e;
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .seizure-info strong {
+            color: #856404;
+            font-weight: 600;
+        }
+
+        @media (max-width: 576px) {
+            .seizure-info {
+                padding: 15px 16px;
+                font-size: 13px;
+                margin-bottom: 20px;
+            }
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 14px 16px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            min-height: 50px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.2);
+            background: #fff;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .form-control, .form-select {
+                font-size: 16px;
+                padding: 14px 16px;
+                min-height: 52px;
+            }
+            
+            .form-label {
+                font-size: 15px;
+                margin-bottom: 6px;
+            }
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            min-height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c82333 0%, #e76500 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .btn {
+                min-height: 48px;
+                padding: 12px 24px;
+                font-size: 16px;
+                border-radius: 8px;
+            }
+            
+            .btn-group-mobile {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 12px;
+                margin-top: 20px;
+            }
+            
+            .btn-group-mobile .btn {
+                width: 100%;
+                margin: 0;
+            }
+        }
+
+        .required {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .form-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .icon-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 16px;
+            color: #6c757d;
+            z-index: 10;
+            font-size: 16px;
+        }
+
+        .icon-input .form-control {
+            padding-left: 48px;
+        }
+
+        .severity-indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .severity-indicator {
+            padding: 12px 10px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .severity-mild { 
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+        }
+
+        .severity-moderate { 
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+        }
+
+        .severity-severe { 
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+
+        @media (max-width: 576px) {
+            .severity-indicators {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .severity-indicator {
+                padding: 10px 8px;
+                font-size: 11px;
+            }
+        }
+
+        .form-control-color {
+            width: 100%;
+            height: 50px !important;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .form-control-color:focus {
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .form-control-color {
+                height: 52px !important;
+            }
+        }
+
+        .row {
+            margin: 0 -8px;
+        }
+
+        .row > * {
+            padding: 0 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .row {
+                margin: 0 -4px;
+            }
+            
+            .row > * {
+                padding: 0 4px;
+                margin-bottom: 16px;
+            }
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
+        }
+
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Enhanced accessibility */
+        .btn:focus-visible,
+        .form-control:focus-visible,
+        .form-select:focus-visible,
+        .back-link:focus-visible {
+            outline: 3px solid #0d6efd;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Calendar
+        </a>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-bolt"></i> Track Seizure</h2>
+                <p>Record seizure details for medical tracking</p>
+            </div>
+            <div class="card-body">
+                <div class="seizure-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Important:</strong> This information can be valuable for your healthcare provider. 
+                    Be as detailed and accurate as possible. In case of emergency, call emergency services immediately.
+                </div>
+
+                <!-- Flash messages would be inserted here by the Flask template -->
+                <div class="alert alert-info d-none" id="infoAlert"></div>
+                <div class="alert alert-danger d-none" id="errorAlert"></div>
+                <div class="alert alert-success d-none" id="successAlert"></div>
+
+                <form id="seizureForm" novalidate>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group">
+                                <label for="seizure_date" class="form-label">
+                                    Seizure Date <span class="required">*</span>
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-calendar"></i>
+                                    <input type="date" class="form-control" id="seizure_date" name="seizure_date" required>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group">
+                                <label for="seizure_time" class="form-label">
+                                    Seizure Time <span class="required">*</span>
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-clock"></i>
+                                    <input type="time" class="form-control" id="seizure_time" name="seizure_time" required>
+                                </div>
+                                <div class="form-text">Approximate time when seizure occurred</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 col-12">
+                            <div class="form-group">
+                                <label for="seizure_type" class="form-label">
+                                    Seizure Type <span class="required">*</span>
+                                </label>
+                                <select class="form-select" id="seizure_type" name="seizure_type" required>
+                                    <option value="">Select seizure type</option>
+                                    <option value="generalized_tonic_clonic">Generalized Tonic-Clonic</option>
+                                    <option value="focal_aware">Focal Aware</option>
+                                    <option value="focal_impaired_awareness">Focal Impaired Awareness</option>
+                                    <option value="absence">Absence</option>
+                                    <option value="myoclonic">Myoclonic</option>
+                                    <option value="atonic">Atonic</option>
+                                    <option value="unknown">Unknown/Other</option>
+                                </select>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="duration" class="form-label">
+                                    Duration
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-stopwatch"></i>
+                                    <input type="number" class="form-control" id="duration" name="duration" min="0" placeholder="0">
+                                </div>
+                                <div class="form-text">Duration in minutes</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group">
+                                <label for="severity" class="form-label">
+                                    Severity <span class="required">*</span>
+                                </label>
+                                <select class="form-select" id="severity" name="severity" required>
+                                    <option value="">Select severity</option>
+                                    <option value="mild">Mild</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="severe">Severe</option>
+                                </select>
+                                <div class="severity-indicators">
+                                    <div class="severity-indicator severity-mild">Mild: Brief, little impact</div>
+                                    <div class="severity-indicator severity-moderate">Moderate: Noticeable symptoms</div>
+                                    <div class="severity-indicator severity-severe">Severe: Significant impact</div>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group">
+                                <label for="color" class="form-label">
+                                    Calendar Color
+                                </label>
+                                <input type="color" class="form-control form-control-color" id="color" name="color" value="#dc3545">
+                                <div class="form-text">Choose display color for calendar</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="triggers" class="form-label">
+                            Possible Triggers
+                        </label>
+                        <textarea class="form-control" id="triggers" name="triggers" rows="3" placeholder="What might have triggered this seizure? (stress, lack of sleep, missed medication, flashing lights, etc.)"></textarea>
+                        <div class="form-text">What might have caused this seizure?</div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes" class="form-label">
+                            Additional Notes
+                        </label>
+                        <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="Recovery time, symptoms before/during/after, medications taken, etc."></textarea>
+                        <div class="form-text">Any additional details about the seizure episode</div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <!-- Desktop button layout -->
+                    <div class="d-none d-md-flex justify-content-end gap-3 mt-4">
+                        <a href="/" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger" id="submitBtn">
+                            <i class="fas fa-save"></i> Save Seizure Record
+                        </button>
+                    </div>
+
+                    <!-- Mobile button layout -->
+                    <div class="d-md-none btn-group-mobile">
+                        <a href="/" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger" id="submitBtnMobile">
+                            <i class="fas fa-save"></i> Save Seizure Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('seizureForm');
+            const submitBtns = [document.getElementById('submitBtn'), document.getElementById('submitBtnMobile')];
+            const isMobile = window.innerWidth <= 768;
+
+            // Auto-fill date from URL parameter if provided
+            const urlParams = new URLSearchParams(window.location.search);
+            const dateParam = urlParams.get('date');
+            if (dateParam) {
+                document.getElementById('seizure_date').value = dateParam;
+            }
+
+            // Set current time as default if not provided
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            if (!document.getElementById('seizure_time').value) {
+                document.getElementById('seizure_time').value = `${hours}:${minutes}`;
+            }
+
+            // Form validation
+            function validateForm() {
+                let isValid = true;
+                const requiredFields = ['seizure_date', 'seizure_time', 'seizure_type', 'severity'];
+                
+                // Clear previous validation states
+                document.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                });
+
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    const feedback = field.parentNode.querySelector('.invalid-feedback') || 
+                                   field.closest('.form-group').querySelector('.invalid-feedback');
+                    
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        feedback.textContent = `${field.previousElementSibling.textContent.replace('*', '').trim()} is required`;
+                        isValid = false;
+                    }
+                });
+
+                // Validate duration is not negative
+                const durationField = document.getElementById('duration');
+                if (durationField.value && parseInt(durationField.value) < 0) {
+                    durationField.classList.add('is-invalid');
+                    const feedback = durationField.closest('.form-group').querySelector('.invalid-feedback');
+                    feedback.textContent = 'Duration cannot be negative';
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    showAlert('Please fix the errors below', 'error');
+                    return;
+                }
+
+                // Show loading state on both buttons
+                submitBtns.forEach(btn => {
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Saving...';
+                    }
+                });
+
+                // Simulate API call (replace with actual form submission)
+                const formData = new FormData(form);
+                
+                // Here you would normally send the data to your Flask backend
+                // For demo purposes, we'll simulate success after 2 seconds
+                setTimeout(() => {
+                    showAlert('Seizure record saved successfully!', 'success');
+                    
+                    // Reset form
+                    form.reset();
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    document.getElementById('seizure_time').value = `${hours}:${minutes}`;
+                    document.getElementById('color').value = '#dc3545';
+                    
+                    // Reset buttons
+                    submitBtns.forEach(btn => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-save"></i> Save Seizure Record';
+                        }
+                    });
+                    
+                    // Redirect after success (uncomment for real implementation)
+                    // setTimeout(() => {
+                    //     window.location.href = '/';
+                    // }, 1500);
+                    
+                }, 2000);
+            });
+
+            // Real-time validation
+            document.querySelectorAll('.form-control, .form-select').forEach(field => {
+                field.addEventListener('blur', function() {
+                    if (this.hasAttribute('required') && !this.value.trim()) {
+                        this.classList.add('is-invalid');
+                        const feedback = this.parentNode.querySelector('.invalid-feedback') || 
+                                       this.closest('.form-group').querySelector('.invalid-feedback');
+                        feedback.textContent = `${this.previousElementSibling.textContent.replace('*', '').trim()} is required`;
+                    } else {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+
+                field.addEventListener('input', function() {
+                    if (this.classList.contains('is-invalid') && this.value.trim()) {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            });
+
+            // Duration validation
+            document.getElementById('duration').addEventListener('input', function() {
+                if (this.value && parseInt(this.value) < 0) {
+                    this.classList.add('is-invalid');
+                    const feedback = this.closest('.form-group').querySelector('.invalid-feedback');
+                    feedback.textContent = 'Duration cannot be negative';
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+
+            // Severity selection visual feedback
+            document.getElementById('severity').addEventListener('change', function() {
+                const indicators = document.querySelectorAll('.severity-indicator');
+                indicators.forEach(indicator => {
+                    indicator.style.borderColor = 'transparent';
+                    indicator.style.transform = 'scale(1)';
+                });
+
+                const selectedValue = this.value;
+                if (selectedValue) {
+                    const selectedIndicator = document.querySelector(`.severity-${selectedValue}`);
+                    if (selectedIndicator) {
+                        selectedIndicator.style.borderColor = 'var(--primary-color)';
+                        selectedIndicator.style.transform = 'scale(1.05)';
+                    }
+                }
+            });
+
+            // Alert system
+            function showAlert(message, type) {
+                const alertTypes = {
+                    'success': 'alert-success',
+                    'error': 'alert-danger', 
+                    'info': 'alert-info'
+                };
+                
+                const alertEl = document.getElementById(type + 'Alert') || document.getElementById('infoAlert');
+                alertEl.className = `alert ${alertTypes[type]} alert-dismissible fade show`;
+                alertEl.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (alertEl.classList.contains('show')) {
+                        const closeBtn = alertEl.querySelector('.btn-close');
+                        if (closeBtn) closeBtn.click();
+                    }
+                }, 5000);
+
+                // Scroll to alert on mobile
+                if (isMobile) {
+                    alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            // Prevent zoom on iOS when focusing inputs
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                document.querySelectorAll('input, select, textarea').forEach(input => {
+                    input.addEventListener('focus', function() {
+                        this.style.fontSize = '16px';
+                    });
+                });
+            }
+
+            // Handle keyboard navigation improvements
+            document.addEventListener('keydown', function(e) {
+                // Enter key submits form when not in textarea
+                if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    form.dispatchEvent(new Event('submit'));
+                }
+                
+                // Escape key clears focus
+                if (e.key === 'Escape') {
+                    document.activeElement.blur();
+                }
+            });
+
+            // Enhanced touch interactions for mobile
+            if (isMobile) {
+                // Add haptic feedback simulation
+                document.querySelectorAll('.btn').forEach(btn => {
+                    btn.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.98)';
+                    });
+                    
+                    btn.addEventListener('touchend', function() {
+                        this.style.transform = '';
+                    });
+                });
+
+                // Improve scroll behavior
+                document.body.style.webkitOverflowScrolling = 'touch';
+                
+                // Auto-scroll to focused input to avoid keyboard covering
+                document.querySelectorAll('input, select, textarea').forEach(input => {
+                    input.addEventListener('focus', function() {
+                        setTimeout(() => {
+                            this.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'center',
+                                inline: 'nearest' 
+                            });
+                        }, 300); // Delay to allow keyboard animation
+                    });
+                });
+            }
+
+            // Handle orientation changes
+            window.addEventListener('orientationchange', function() {
+                setTimeout(() => {
+                    // Recalculate viewport and adjust if needed
+                    if (document.activeElement && 
+                        (document.activeElement.tagName === 'INPUT' || 
+                         document.activeElement.tagName === 'SELECT' || 
+                         document.activeElement.tagName === 'TEXTAREA')) {
+                        document.activeElement.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }
+                }, 500);
+            });
+
+            // Color picker enhancement for mobile
+            const colorPicker = document.getElementById('color');
+            if (colorPicker && isMobile) {
+                colorPicker.addEventListener('change', function() {
+                    // Show color preview
+                    this.style.backgroundColor = this.value;
+                    this.style.borderColor = this.value;
+                });
+            }
+
+            // Progressive enhancement for network status
+            if ('navigator' in window && 'onLine' in navigator) {
+                function handleNetworkChange() {
+                    if (!navigator.onLine) {
+                        showAlert('You appear to be offline. Changes will be saved when you reconnect.', 'info');
+                        submitBtns.forEach(btn => {
+                            if (btn) btn.disabled = true;
+                        });
+                    } else {
+                        submitBtns.forEach(btn => {
+                            if (btn) btn.disabled = false;
+                        });
+                    }
+                }
+
+                window.addEventListener('online', handleNetworkChange);
+                window.addEventListener('offline', handleNetworkChange);
+                
+                // Initial check
+                handleNetworkChange();
+            }
+
+            // Add swipe back gesture for mobile
+            if (isMobile && 'ontouchstart' in window) {
+                let touchStartX = 0;
+                let touchStartY = 0;
+                
+                document.addEventListener('touchstart', function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                document.addEventListener('touchend', function(e) {
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const deltaX = touchEndX - touchStartX;
+                    const deltaY = touchEndY - touchStartY;
+                    
+                    // Swipe right from left edge (back gesture)
+                    if (touchStartX < 50 && deltaX > 100 && Math.abs(deltaY) < 100) {
+                        window.history.back();
+                    }
+                }, { passive: true });
+            }
+
+            // Emergency contact quick access (could be enhanced)
+            document.addEventListener('keydown', function(e) {
+                // Emergency shortcut (Ctrl/Cmd + E)
+                if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                    e.preventDefault();
+                    if (confirm('Do you need emergency assistance? This will attempt to call emergency services.')) {
+                        // In a real app, this could trigger emergency protocols
+                        if ('geolocation' in navigator) {
+                            navigator.geolocation.getCurrentPosition(function(position) {
+                                console.log('Emergency location:', position.coords);
+                                // Send location to emergency services
+                            });
+                        }
+                        window.open('tel:911'); // Or local emergency number
+                    }
+                }
+            });
+
+            // Add a discrete emergency button for mobile
+            if (isMobile) {
+                const emergencyBtn = document.createElement('button');
+                emergencyBtn.innerHTML = '🚨';
+                emergencyBtn.className = 'btn btn-outline-danger position-fixed';
+                emergencyBtn.style.cssText = `
+                    top: 20px;
+                    left: 20px;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    font-size: 16px;
+                    z-index: 1000;
+                    opacity: 0.7;
+                    padding: 0;
+                    min-height: unset;
+                `;
+                emergencyBtn.title = 'Emergency Help';
+                emergencyBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (confirm('Do you need emergency assistance?')) {
+                        window.open('tel:911');
+                    }
+                });
+                document.body.appendChild(emergencyBtn);
+            }
+        });
+    </script>
+</body>
+</html>

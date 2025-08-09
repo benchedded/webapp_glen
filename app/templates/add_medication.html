@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Medication - Health Tracker</title>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --success-light: #20c997;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Montserrat", sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            padding: 15px 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            padding: 0 15px;
+        }
+
+        /* Mobile-first responsive container */
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            body {
+                padding: 10px 0;
+            }
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-height: 44px; /* Touch-friendly */
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .back-link i {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        /* Mobile back link adjustments */
+        @media (max-width: 576px) {
+            .back-link {
+                padding: 10px 16px;
+                margin-bottom: 15px;
+                font-size: 14px;
+            }
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            overflow: hidden;
+        }
+
+        /* Mobile card adjustments */
+        @media (max-width: 768px) {
+            .card {
+                border-radius: 15px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                margin: 0 5px;
+            }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--success-light) 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            border: none;
+            padding: 30px 25px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .card-header p {
+            margin: 12px 0 0 0;
+            opacity: 0.95;
+            font-size: 1.1rem;
+        }
+
+        /* Mobile header adjustments */
+        @media (max-width: 768px) {
+            .card-header {
+                padding: 25px 20px;
+                border-radius: 15px 15px 0 0 !important;
+            }
+            
+            .card-header h2 {
+                font-size: 1.6rem;
+            }
+            
+            .card-header p {
+                font-size: 1rem;
+                margin-top: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-header {
+                padding: 20px 15px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .card-header p {
+                font-size: 0.9rem;
+            }
+        }
+
+        .card-body {
+            padding: 35px 30px;
+        }
+
+        /* Mobile body adjustments */
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 25px 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-body {
+                padding: 20px 15px;
+            }
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 14px 16px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            min-height: 50px; /* Touch-friendly */
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--success-color);
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.2);
+            background: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Mobile form improvements */
+        @media (max-width: 768px) {
+            .form-control, .form-select {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 14px 16px;
+                min-height: 52px; /* Better touch target */
+            }
+            
+            .form-label {
+                font-size: 15px;
+                margin-bottom: 6px;
+            }
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            min-height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--success-light) 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        /* Mobile button improvements */
+        @media (max-width: 768px) {
+            .btn {
+                min-height: 48px; /* Touch-friendly */
+                padding: 12px 24px;
+                font-size: 16px;
+                border-radius: 8px;
+            }
+            
+            .btn-group-mobile {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 12px;
+                margin-top: 20px;
+            }
+            
+            .btn-group-mobile .btn {
+                width: 100%;
+                margin: 0;
+            }
+        }
+
+        .required {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .form-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .frequency-help {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #495057;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .frequency-help strong {
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Mobile frequency help */
+        @media (max-width: 576px) {
+            .frequency-help {
+                padding: 12px 14px;
+                font-size: 12px;
+            }
+        }
+
+        .icon-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 16px;
+            color: #6c757d;
+            z-index: 10;
+            font-size: 16px;
+        }
+
+        .icon-input .form-control {
+            padding-left: 48px;
+        }
+
+        /* Color picker specific styling */
+        .form-control-color {
+            width: 100%;
+            height: 50px !important;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .form-control-color:focus {
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.2);
+        }
+
+        /* Mobile color picker */
+        @media (max-width: 768px) {
+            .form-control-color {
+                height: 52px !important;
+            }
+        }
+
+        /* Row and column spacing */
+        .row {
+            margin: 0 -8px;
+        }
+
+        .row > * {
+            padding: 0 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Mobile row adjustments */
+        @media (max-width: 768px) {
+            .row {
+                margin: 0 -4px;
+            }
+            
+            .row > * {
+                padding: 0 4px;
+                margin-bottom: 16px;
+            }
+        }
+
+        /* Loading state */
+        .btn:disabled {
+            opacity: 0.7;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Validation states */
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
+        }
+
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .form-control, .form-select {
+                border-width: 3px;
+            }
+            
+            .btn {
+                border-width: 3px;
+                border-style: solid;
+            }
+        }
+
+        /* Focus visible for keyboard navigation */
+        .btn:focus-visible,
+        .form-control:focus-visible,
+        .form-select:focus-visible,
+        .back-link:focus-visible {
+            outline: 3px solid #0d6efd;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Calendar
+        </a>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-pills"></i> Add Medication</h2>
+                <p>Enter your medication details to track on the calendar</p>
+            </div>
+            <div class="card-body">
+                <!-- Flash messages would be inserted here by the Flask template -->
+                <div class="alert alert-info d-none" id="infoAlert"></div>
+                <div class="alert alert-danger d-none" id="errorAlert"></div>
+                <div class="alert alert-success d-none" id="successAlert"></div>
+
+                <form id="medicationForm" novalidate>
+                    <div class="row">
+                        <div class="col-md-8 col-12">
+                            <div class="form-group">
+                                <label for="name" class="form-label">
+                                    Medication Name <span class="required">*</span>
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-pills"></i>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter medication name" required>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="dosage" class="form-label">
+                                    Dosage <span class="required">*</span>
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-prescription"></i>
+                                    <input type="text" class="form-control" id="dosage" name="dosage" placeholder="e.g., 50mg" required>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="start_date" class="form-label">
+                                    Start Date <span class="required">*</span>
+                                </label>
+                                <input type="date" class="form-control" id="start_date" name="start_date" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="end_date" class="form-label">
+                                    End Date
+                                </label>
+                                <input type="date" class="form-control" id="end_date" name="end_date">
+                                <div class="form-text">Leave blank for ongoing medication</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="time_to_take" class="form-label">
+                                    Time to Take <span class="required">*</span>
+                                </label>
+                                <div class="icon-input">
+                                    <i class="fas fa-clock"></i>
+                                    <input type="time" class="form-control" id="time_to_take" name="time_to_take" value="09:00" required>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 col-12">
+                            <div class="form-group">
+                                <label for="frequency" class="form-label">
+                                    Frequency <span class="required">*</span>
+                                </label>
+                                <select class="form-select" id="frequency" name="frequency" required>
+                                    <option value="">Select frequency</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="twice_daily">Twice Daily</option>
+                                    <option value="three_times_daily">Three Times Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="as_needed">As Needed</option>
+                                </select>
+                                <div class="invalid-feedback"></div>
+                                <div class="frequency-help">
+                                    <strong>Frequency Guide:</strong>
+                                    <small>
+                                        • Daily: Take once per day<br>
+                                        • Twice Daily: Take every 12 hours<br>
+                                        • Three Times Daily: Take every 8 hours<br>
+                                        • As Needed: Take when symptoms occur
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label for="color" class="form-label">
+                                    Calendar Color
+                                </label>
+                                <input type="color" class="form-control form-control-color" id="color" name="color" value="#28a745">
+                                <div class="form-text">Choose display color for calendar</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="instructions" class="form-label">
+                            Special Instructions
+                        </label>
+                        <textarea class="form-control" id="instructions" name="instructions" rows="4" placeholder="e.g., Take with food, Avoid alcohol, Take 30 minutes before meals"></textarea>
+                        <div class="form-text">Optional: Any special instructions for taking this medication</div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <!-- Desktop button layout -->
+                    <div class="d-none d-md-flex justify-content-end gap-3 mt-4">
+                        <a href="/" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success" id="submitBtn">
+                            <i class="fas fa-plus-circle"></i> Add Medication
+                        </button>
+                    </div>
+
+                    <!-- Mobile button layout -->
+                    <div class="d-md-none btn-group-mobile">
+                        <a href="/" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success" id="submitBtnMobile">
+                            <i class="fas fa-plus-circle"></i> Add Medication
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('medicationForm');
+            const submitBtns = [document.getElementById('submitBtn'), document.getElementById('submitBtnMobile')];
+            const isMobile = window.innerWidth <= 768;
+
+            // Auto-fill date from URL parameter if provided
+            const urlParams = new URLSearchParams(window.location.search);
+            const dateParam = urlParams.get('date');
+            if (dateParam) {
+                document.getElementById('start_date').value = dateParam;
+            }
+
+            // Form validation
+            function validateForm() {
+                let isValid = true;
+                const requiredFields = ['name', 'dosage', 'start_date', 'time_to_take', 'frequency'];
+                
+                // Clear previous validation states
+                document.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                });
+
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    const feedback = field.parentNode.querySelector('.invalid-feedback') || 
+                                   field.closest('.form-group').querySelector('.invalid-feedback');
+                    
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        feedback.textContent = `${field.previousElementSibling.textContent.replace('*', '').trim()} is required`;
+                        isValid = false;
+                    }
+                });
+
+                // Validate end date is after start date
+                const startDate = document.getElementById('start_date').value;
+                const endDate = document.getElementById('end_date').value;
+                
+                if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+                    const endDateField = document.getElementById('end_date');
+                    const feedback = endDateField.closest('.form-group').querySelector('.invalid-feedback');
+                    endDateField.classList.add('is-invalid');
+                    feedback.textContent = 'End date must be after start date';
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    showAlert('Please fix the errors below', 'error');
+                    return;
+                }
+
+                // Show loading state on both buttons
+                submitBtns.forEach(btn => {
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Adding...';
+                    }
+                });
+
+                // Simulate API call (replace with actual form submission)
+                const formData = new FormData(form);
+                
+                // Here you would normally send the data to your Flask backend
+                // For demo purposes, we'll simulate success after 2 seconds
+                setTimeout(() => {
+                    showAlert('Medication added successfully!', 'success');
+                    
+                    // Reset form
+                    form.reset();
+                    document.getElementById('time_to_take').value = '09:00';
+                    document.getElementById('color').value = '#28a745';
+                    
+                    // Reset buttons
+                    submitBtns.forEach(btn => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Medication';
+                        }
+                    });
+                    
+                    // Redirect after success (uncomment for real implementation)
+                    // setTimeout(() => {
+                    //     window.location.href = '/';
+                    // }, 1500);
+                    
+                }, 2000);
+            });
+
+            // Real-time validation
+            document.querySelectorAll('.form-control, .form-select').forEach(field => {
+                field.addEventListener('blur', function() {
+                    if (this.hasAttribute('required') && !this.value.trim()) {
+                        this.classList.add('is-invalid');
+                        const feedback = this.parentNode.querySelector('.invalid-feedback') || 
+                                       this.closest('.form-group').querySelector('.invalid-feedback');
+                        feedback.textContent = `${this.previousElementSibling.textContent.replace('*', '').trim()} is required`;
+                    } else {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+
+                field.addEventListener('input', function() {
+                    if (this.classList.contains('is-invalid') && this.value.trim()) {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            });
+
+            // Date validation
+            document.getElementById('end_date').addEventListener('change', function() {
+                const startDate = document.getElementById('start_date').value;
+                const endDate = this.value;
+                
+                if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+                    this.classList.add('is-invalid');
+                    const feedback = this.closest('.form-group').querySelector('.invalid-feedback');
+                    feedback.textContent = 'End date must be after start date';
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+
+            document.getElementById('start_date').addEventListener('change', function() {
+                const endDate = document.getElementById('end_date').value;
+                if (endDate) {
+                    document.getElementById('end_date').dispatchEvent(new Event('change'));
+                }
+            });
+
+            // Alert system
+            function showAlert(message, type) {
+                const alertTypes = {
+                    'success': 'alert-success',
+                    'error': 'alert-danger', 
+                    'info': 'alert-info'
+                };
+                
+                const alertEl = document.getElementById(type + 'Alert') || document.getElementById('infoAlert');
+                alertEl.className = `alert ${alertTypes[type]} alert-dismissible fade show`;
+                alertEl.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (alertEl.classList.contains('show')) {
+                        const closeBtn = alertEl.querySelector('.btn-close');
+                        if (closeBtn) closeBtn.click();
+                    }
+                }, 5000);
+
+                // Scroll to alert on mobile
+                if (isMobile) {
+                    alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            // Prevent zoom on iOS when focusing inputs
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                document.querySelectorAll('input, select, textarea').forEach(input => {
+                    input.addEventListener('focus', function() {
+                        this.style.fontSize = '16px';
+                    });
+                });
+            }
+
+            // Handle keyboard navigation improvements
+            document.addEventListener('keydown', function(e) {
+                // Enter key submits form when not in textarea
+                if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    form.dispatchEvent(new Event('submit'));
+                }
+                
+                // Escape key clears focus
+                if (e.key === 'Escape') {
+                    document.activeElement.blur();
+                }
+            });
+
+            // Enhanced touch interactions for mobile
+            if (isMobile) {
+                // Add haptic feedback simulation
+                document.querySelectorAll('.btn').forEach(btn => {
+                    btn.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.98)';
+                    });
+                    
+                    btn.addEventListener('touchend', function() {
+                        this.style.transform = '';
+                    });
+                });
+
+                // Improve scroll behavior
+                document.body.style.webkitOverflowScrolling = 'touch';
+                
+                // Auto-scroll to focused input to avoid keyboard covering
+                document.querySelectorAll('input, select, textarea').forEach(input => {
+                    input.addEventListener('focus', function() {
+                        setTimeout(() => {
+                            this.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'center',
+                                inline: 'nearest' 
+                            });
+                        }, 300); // Delay to allow keyboard animation
+                    });
+                });
+            }
+
+            // Handle orientation changes
+            window.addEventListener('orientationchange', function() {
+                setTimeout(() => {
+                    // Recalculate viewport and adjust if needed
+                    if (document.activeElement && 
+                        (document.activeElement.tagName === 'INPUT' || 
+                         document.activeElement.tagName === 'SELECT' || 
+                         document.activeElement.tagName === 'TEXTAREA')) {
+                        document.activeElement.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }
+                }, 500);
+            });
+
+            // Color picker enhancement for mobile
+            const colorPicker = document.getElementById('color');
+            if (colorPicker && isMobile) {
+                colorPicker.addEventListener('change', function() {
+                    // Show color preview
+                    this.style.backgroundColor = this.value;
+                    this.style.borderColor = this.value;
+                });
+            }
+
+            // Progressive enhancement for network status
+            if ('navigator' in window && 'onLine' in navigator) {
+                function handleNetworkChange() {
+                    if (!navigator.onLine) {
+                        showAlert('You appear to be offline. Changes will be saved when you reconnect.', 'info');
+                        submitBtns.forEach(btn => {
+                            if (btn) btn.disabled = true;
+                        });
+                    } else {
+                        submitBtns.forEach(btn => {
+                            if (btn) btn.disabled = false;
+                        });
+                    }
+                }
+
+                window.addEventListener('online', handleNetworkChange);
+                window.addEventListener('offline', handleNetworkChange);
+                
+                // Initial check
+                handleNetworkChange();
+            }
+
+            // Add swipe back gesture for mobile
+            if (isMobile && 'ontouchstart' in window) {
+                let touchStartX = 0;
+                let touchStartY = 0;
+                
+                document.addEventListener('touchstart', function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                document.addEventListener('touchend', function(e) {
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const deltaX = touchEndX - touchStartX;
+                    const deltaY = touchEndY - touchStartY;
+                    
+                    // Swipe right from left edge (back gesture)
+                    if (touchStartX < 50 && deltaX > 100 && Math.abs(deltaY) < 100) {
+                        window.history.back();
+                    }
+                }, { passive: true });
+            }
+        });
+    </script>
+</body>
+</html>
