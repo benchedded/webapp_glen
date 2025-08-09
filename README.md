@@ -1,1 +1,22 @@
-# webapp_glen
+(venv) PS C:\Users\bench\OneDrive\assignment_web_app\app> pip list
+Package            Version
+------------------ --------
+blinker            1.9.0
+certifi            2025.8.3
+charset-normalizer 3.4.2
+click              8.2.1
+colorama           0.4.6
+Flask              3.1.1
+Flask-Mail         0.10.0
+idna               3.10
+itsdangerous       2.2.0
+Jinja2             3.1.6
+MarkupSafe         3.0.2
+pip                24.2
+python-dotenv      1.1.1
+python-magic-bin   0.4.14
+python_mail        1.0.2
+requests           2.32.4
+urllib3            2.5.0
+Werkzeug           3.1.3
+WTForms            3.2.1
